@@ -12,9 +12,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          submodules: true
+        uses: actions/checkout@v4
+
+      - name: Initialize and update submodules
+        run: |
+          git submodule init
+          git submodule update --recursive
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -24,8 +27,10 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
-      - name:
+      - name: List files for diagnostics
         run: |
+          echo "Listing files in the root directory:"
+          dir
           echo "Listing files in libclash directory:"
           dir libclash
           echo "Listing files in libclash/windows directory:"

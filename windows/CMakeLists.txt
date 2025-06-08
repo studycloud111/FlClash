@@ -84,14 +84,26 @@ install(FILES "${FLUTTER_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
 # libclash.so
 set(CLASH_DIR "../libclash/windows")
 
-install(PROGRAMS "${CLASH_DIR}/FlClashCore.exe" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
-  COMPONENT Runtime)
+if(EXISTS "${CLASH_DIR}/FlClashCore.exe")
+  install(PROGRAMS "${CLASH_DIR}/FlClashCore.exe" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
+    COMPONENT Runtime)
+else()
+  message(FATAL_ERROR "Core executable not found at: ${CLASH_DIR}/FlClashCore.exe")
+endif()
 
-install(PROGRAMS "${CLASH_DIR}/FlClashHelperService.exe" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
-  COMPONENT Runtime)
+if(EXISTS "${CLASH_DIR}/FlClashHelperService.exe")
+  install(PROGRAMS "${CLASH_DIR}/FlClashHelperService.exe" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
+    COMPONENT Runtime)
+else()
+  message(FATAL_ERROR "Helper service not found at: ${CLASH_DIR}/FlClashHelperService.exe")
+endif()
 
-install(FILES "EnableLoopback.exe" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
-  COMPONENT Runtime)
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/EnableLoopback.exe")
+  install(FILES "EnableLoopback.exe" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
+    COMPONENT Runtime)
+else()
+  message(FATAL_ERROR "EnableLoopback.exe not found in ${CMAKE_CURRENT_SOURCE_DIR}!")
+endif()
 
 if(PLUGIN_BUNDLED_LIBRARIES)
   install(FILES "${PLUGIN_BUNDLED_LIBRARIES}"

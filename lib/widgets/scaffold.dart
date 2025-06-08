@@ -242,13 +242,13 @@ class CommonScaffoldState extends State<CommonScaffold> {
     if (_isEdit) {
       return IconButton(
         onPressed: _appBarState.value.editState?.onExit,
-        icon: Icon(Icons.close),
+        icon: const Icon(Icons.close),
       );
     }
     return _isSearch
         ? IconButton(
             onPressed: _handleExitSearching,
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
           )
         : widget.leading;
   }
@@ -285,7 +285,7 @@ class CommonScaffoldState extends State<CommonScaffold> {
       return genActions([
         IconButton(
           onPressed: _handleClear,
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
         ),
       ]);
     }
@@ -300,7 +300,7 @@ class CommonScaffoldState extends State<CommonScaffold> {
                 ),
               );
             },
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
           ),
         ...actions
       ],
@@ -404,7 +404,7 @@ class CommonScaffoldState extends State<CommonScaffold> {
                 }
               });
               if (keywords.isEmpty) {
-                return SizedBox();
+                return const SizedBox();
               }
               return Padding(
                 padding: const EdgeInsets.symmetric(
@@ -446,7 +446,7 @@ class CommonScaffoldState extends State<CommonScaffold> {
               return IntrinsicWidth(
                 child: IntrinsicHeight(
                   child: FadeScaleBox(
-                    child: value ?? SizedBox(),
+                    child: value ?? const SizedBox(),
                   ),
                 ),
               );
@@ -476,7 +476,7 @@ List<Widget> genActions(List<Widget> actions, {double? space}) {
         width: space ?? 4,
       ),
     ),
-    SizedBox(
+    const SizedBox(
       width: 8,
     )
   ];

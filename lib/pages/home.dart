@@ -2,7 +2,10 @@ import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/manager/auth_manager.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/pages/login_page.dart';
+import 'package:fl_clash/pages/user_info_page.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -12,42 +15,81 @@ import 'package:intl/intl.dart';
 
 typedef OnSelected = void Function(int index);
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return HomeBackScope(
-      child: Consumer(
-        builder: (_, ref, child) {
-          final state = ref.watch(homeStateProvider);
-          final viewMode = state.viewMode;
-          final navigationItems = state.navigationItems;
-          final pageLabel = state.pageLabel;
-          final index = navigationItems.lastIndexWhere(
-            (element) => element.label == pageLabel,
-          );
-          final currentIndex = index == -1 ? 0 : index;
-          final navigationBar = CommonNavigationBar(
-            viewMode: viewMode,
-            navigationItems: navigationItems,
-            currentIndex: currentIndex,
-          );
-          final bottomNavigationBar =
-              viewMode == ViewMode.mobile ? navigationBar : null;
-          final sideNavigationBar =
-              viewMode != ViewMode.mobile ? navigationBar : null;
-          return CommonScaffold(
-            key: globalState.homeScaffoldKey,
-            title: Intl.message(
-              pageLabel.name,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final auth = ref.watch(authProvider);
+    final state = ref.watch(homeStateProvider);
+    final viewMode = state.viewMode;
+    final navigationItems = state.navigationItems;
+    final pageLabel = state.pageLabel;
+    final index = navigationItems.lastIndexWhere(
+      (element) => element.label == pageLabel,
+    );
+    final currentIndex = index == -1 ? 0 : index;
+    final navigationBar = CommonNavigationBar(
+      viewMode: viewMode,
+      navigationItems: navigationItems,
+      currentIndex: currentIndex,
+    );
+    final bottomNavigationBar =
+        viewMode == ViewMode.mobile ? navigationBar : null;
+    final sideNavigationBar =
+        viewMode != ViewMode.mobile ? navigationBar : null;
+
+    final actions = [
+      if (auth.isLoggedIn)
+        Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.account_circle),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const UserInfoPage(),
+                  ),
+                );
+              },
             ),
-            sideNavigationBar: sideNavigationBar,
-            body: child!,
-            bottomNavigationBar: bottomNavigationBar,
-          );
-        },
-        child: _HomePageView(),
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () {
+                ref.read(authProvider.notifier).logout();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Logged out')),
+                );
+              },
+            ),
+          ],
+        )
+      else
+        IconButton(
+          icon: const Icon(Icons.person),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginPage()),
+            );
+          },
+        ),
+    ];
+
+    return HomeBackScope(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(Intl.message(pageLabel.name)),
+          actions: actions,
+        ),
+        body: Row(
+          children: [
+            if (sideNavigationBar != null) sideNavigationBar,
+            Expanded(child: _HomePageView()),
+          ],
+        ),
+        bottomNavigationBar: bottomNavigationBar,
       ),
     );
   }
@@ -129,16 +171,6 @@ class _HomePageViewState extends ConsumerState<_HomePageView> {
       controller: _pageController,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: navigationItems.length,
-      // onPageChanged: (index) {
-      //   debouncer.call(DebounceTag.pageChange, () {
-      //     WidgetsBinding.instance.addPostFrameCallback((_) {
-      //       if (_pageIndex != index) {
-      //         final pageLabel = navigationItems[index].label;
-      //         _toPage(pageLabel, true);
-      //       }
-      //     });
-      //   });
-      // },
       itemBuilder: (_, index) {
         final navigationItem = navigationItems[index];
         return KeepScope(

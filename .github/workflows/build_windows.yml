@@ -24,6 +24,14 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
+      - name:
+        run: |
+          echo "Listing files in libclash directory:"
+          dir libclash
+          echo "Listing files in libclash/windows directory:"
+          dir libclash\windows
+        shell: cmd
+
       - name: Build Windows executable
         run: flutter build windows --release
 

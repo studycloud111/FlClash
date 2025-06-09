@@ -25,13 +25,19 @@ jobs:
         run: flutter pub get
 
       - name: List files for diagnostics
+        continue-on-error: true
         run: |
           echo "Listing files in the root directory:"
           dir
+          echo "---"
           echo "Listing files in libclash directory:"
           dir libclash
-          echo "Listing files in libclash/windows directory:"
-          dir libclash\windows
+          echo "---"
+          echo "Listing files in core/Clash.Meta directory:"
+          dir core\Clash.Meta
+          echo "---"
+          echo "Listing files in plugins/flutter_distributor directory:"
+          dir plugins\flutter_distributor
         shell: cmd
 
       - name: Build Windows executable

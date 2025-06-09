@@ -16,6 +16,10 @@ jobs:
         with:
           submodules: 'recursive'
           lfs: true
+          fetch-depth: 0
+
+      - name: Check submodule status
+        run: git submodule status --recursive
 
       - name: Pull LFS files
         run: git lfs pull

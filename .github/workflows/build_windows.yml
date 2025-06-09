@@ -17,6 +17,9 @@ jobs:
           submodules: 'recursive'
           lfs: true
 
+      - name: Pull LFS files
+        run: git lfs pull
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -34,11 +37,11 @@ jobs:
           echo "Listing files in libclash directory:"
           dir libclash
           echo "---"
-          echo "Listing files in core/Clash.Meta directory:"
-          dir core\Clash.Meta
+          echo "Listing files in libclash/windows directory:"
+          dir libclash\windows
           echo "---"
-          echo "Listing files in plugins/flutter_distributor directory:"
-          dir plugins\flutter_distributor
+          echo "Checking specifically for FlClashCore.exe:"
+          dir libclash\windows\FlClashCore.exe
         shell: cmd
 
       - name: Build Windows executable
